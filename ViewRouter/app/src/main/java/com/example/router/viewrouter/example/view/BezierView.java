@@ -79,11 +79,11 @@ public class BezierView extends View {
         mCubicPaint = new Paint();
         mCubicPaint.setAntiAlias(true);
         mCubicPaint.setStyle(Paint.Style.STROKE);
-        mCubicPaint.setStrokeWidth(2);
+        mCubicPaint.setStrokeWidth(3);
         //坐标轴空出文本宽度
         float textWidth = mtextPaint.getTextSize() + margin;
 
-        mWidth = getWidth() - 2 * textWidth;
+        mWidth = getWidth() - 3 * textWidth;
         mHeight = getHeight() - 2 * textWidth;
 
         int maxData = Collections.max(partIntegerList(mData));
@@ -92,30 +92,30 @@ public class BezierView extends View {
         float base = mHeight / (maxData - minData);
         //画水平线
         for (int i = 0; i < (maxData - minData); i++) {
-            canvas.drawLine(textWidth, i * base + textWidth, mWidth + textWidth + margin, i * base + textWidth, mXPaint);
+            canvas.drawLine(2 *textWidth, i * base + textWidth, mWidth + 2 *textWidth + margin, i * base + textWidth, mXPaint);
             //y轴文字
-            canvas.drawText(((long) (mHeight - i * base - minData)) + "", margin, i * base + textWidth + textWidth/4, mtextPaint);
+            canvas.drawText(((long) (mHeight - i * base - minData)) + "", textWidth, i * base + textWidth + textWidth/4, mtextPaint);
         }
 
         for (int i = 0; i < mData.size(); i++) {
             Bezier detail = mData.get(i);
             //点圆心
-            float centerX = mWidth / count * (detail.getMonth() - 1) + radio + textWidth;
+            float centerX = mWidth / count * (detail.getMonth() - 1) + radio + 2 *textWidth;
             float centerY = mHeight - base * (detail.getArticalCount() - minData) + textWidth;
 
             //绘制x轴数据
-            canvas.drawText(detail.getMonth() + "", centerX, mHeight + 2 * textWidth - margin, mtextPaint);
+            canvas.drawText(detail.getMonth() + "月", centerX, mHeight + 2 * textWidth - margin, mtextPaint);
             //绘制点
             canvas.drawCircle(centerX, centerY, radio, mCirclePaint);
             //绘制数据曲线
             if (i > 0) {
                 Bezier lastDetail = mData.get(i - 1);
-                float lastCenterX = mWidth / count * (lastDetail.getMonth() - 1) + radio + textWidth;
+                float lastCenterX = mWidth / count * (lastDetail.getMonth() - 1) + radio + 2 *textWidth;
                 float lastCenterY = mHeight - base * (lastDetail.getArticalCount() - minData) + textWidth;
 
                 Path path = new Path();
                 path.moveTo(lastCenterX, lastCenterY);
-                path.quadTo(lastCenterX + mWidth / count / 2, lastCenterY,
+                path.cubicTo(lastCenterX + mWidth / count / 2, lastCenterY,lastCenterX + mWidth / count / 2, centerY,
                         centerX, centerY);
                 canvas.drawPath(path, mCubicPaint);
             }
